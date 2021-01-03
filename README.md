@@ -5,11 +5,11 @@ It provides an easy-to use React Hook to subscribe users to your MailChimp lists
 # Install
 
 ```npm
-npm install react-use-mailchimp --save
+npm install react-use-mailchimp-signup --save
 ```
 
 ```npm
-yarn add react-use-mailchimp
+yarn add react-use-mailchimp-signup
 ```
 
 # Usage
@@ -17,7 +17,7 @@ yarn add react-use-mailchimp
 ```jsx
 import React, { useState } from 'react';
 // import the hook
-import { useMailChimp } from 'react-use-mailchimp';
+import { useMailChimp } from 'react-use-mailchimp-signup';
 
 export const MyComponent = () => {
   const { error, loading, status, subscribe } = useMailChimp({

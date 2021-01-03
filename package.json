@@ -34,16 +34,16 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "react-use-mailchimp",
+  "name": "react-use-mailchimp-signup",
   "author": "Ash Hitchcock",
-  "module": "dist/react-use-mailchimp.esm.js",
+  "module": "dist/react-use-mailchimp-signup.esm.js",
   "size-limit": [
     {
-      "path": "dist/react-use-mailchimp.cjs.production.min.js",
+      "path": "dist/react-use-mailchimp-signup.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/react-use-mailchimp.esm.js",
+      "path": "dist/react-use-mailchimp-signup.esm.js",
       "limit": "10 KB"
     }
   ],

@@ -68,7 +68,9 @@ export const useMailChimp = ({ action }: UseMailChimpProps) =>
 // Reset everything for try 
       handleReset();
 
-      const response: any = await fetch(url);
+      const response: any = await fetch(url, {
+        method: 'POST',
+      });
 
       if (response.status >= 400) {
         handleError('Failed to subscribe');

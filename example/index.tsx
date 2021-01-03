@@ -1,7 +1,7 @@
 import 'react-app-polyfill/ie11';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import {MailchimpFieldProps, useMailChimp} from '../.';
+import { MailchimpFieldProps, useMailChimp } from '../.';
 
 const App = () => {
 
@@ -33,7 +33,7 @@ const handleInputChange = (event) => {
     <form onSubmit={handleSubmit}>
       <label htmlFor="mchimpEmail">Email</label>
       <input type="email" name="email" id="mchimpEmail" onChange={handleInputChange} />
-      <button type="submit" />
+      <button type="submit" >Sign me up!</button>
     </form>
   </>
   );

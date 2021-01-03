@@ -57,7 +57,7 @@ export const MyComponent = () => {
           id="mchimpEmail"
           onChange={handleInputChange}
         />
-        <button type="submit" />
+        <button type="submit">Sign me up!</button>
       </form>
     </>
   );

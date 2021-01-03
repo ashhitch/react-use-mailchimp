@@ -1,4 +1,4 @@
-import  * as React from 'react';
+import  { useState } from 'react';
 import fetch from 'isomorphic-fetch';
 
 interface UseMailChimpProps
@@ -15,9 +15,9 @@ const regex = /^([\w_\.\-\+])+\@([\w\-]+\.)+([\w]{2,10})+$/;
 
 export const useMailChimp = ({ action }: UseMailChimpProps) =>
 {
-  const [error, setError] = React.useState<undefined | string>(undefined);
-  const [loading, setLoading] = React.useState(false);
-  const [status, setStatus] = React.useState<string | undefined>(undefined);
+  const [error, setError] = useState<undefined | string>(undefined);
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<string | undefined>(undefined);
 
 
   const handleError = (error: string) =>

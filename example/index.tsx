@@ -32,7 +32,7 @@ const handleInputChange = (event) => {
 
     <form onSubmit={handleSubmit}>
       <label htmlFor="mchimpEmail">Email</label>
-      <input type="email" name="email" id="mchimpEmail" onChange={handleInputChange} />
+      <input type="email" name="EMAIL" id="mchimpEmail" onChange={handleInputChange} />
       <button type="submit" >Sign me up!</button>
     </form>
   </>

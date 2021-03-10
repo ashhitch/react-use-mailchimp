@@ -1,19 +1,26 @@
 import  { useState } from 'react';
 import fetch from 'isomorphic-fetch';
 
+
+
+interface UseMailChimpOptionsProps
+{
+  dontUpperCaseKeys?: boolean;
+}
+
 interface UseMailChimpProps
 {
   action: string;
+  options: UseMailChimpOptionsProps;
 }
 
 export interface MailchimpFieldProps {
-  email: string;
   [x: string]: string | number; 
 }
 
 const regex = /^([\w_\.\-\+])+\@([\w\-]+\.)+([\w]{2,10})+$/;
 
-export const useMailChimp = ({ action }: UseMailChimpProps) =>
+export const useMailChimp = ({ action, options }: UseMailChimpProps) =>
 {
   const [error, setError] = useState<undefined | string>(undefined);
   const [loading, setLoading] = useState(false);
@@ -41,23 +48,36 @@ export const useMailChimp = ({ action }: UseMailChimpProps) =>
   }
 
 
-  const subscribe = async (fields: Partial<MailchimpFieldProps>) =>
+  const subscribe = async (passedFields: Partial<MailchimpFieldProps>) =>
   {
+
+    const fields = {...passedFields};
+
+    // Handle if user uses lowercase email field
+    if(fields.email) {
+      fields.EMAIL = fields.email;
+    }
 
     try {
 
-      // Test fir valid email
-      const { email } =  fields;
-
-      if(!email || !regex.test(email)) {
+      // Test for valid email
+      const { EMAIL } = fields;
+  
+      if(!EMAIL || !regex.test(`${EMAIL}`) ){
         handleError('invalid email');
         return;
       }
 
+      // if used lowercase befeore then we should restore it...
+      if(fields.email && fields.EMAIL) {
+        delete fields.EMAIL;
+      }
+
       // Build values as url stirng
-      const values = Object.entries(fields).map((key, value) => {
-        return `${key}=${encodeURIComponent(value)}`;
-      }).join("&");
+      const values = Object.entries(fields).map(([key, value]) => {
+          const formattedKey = options?.dontUpperCaseKeys ? key : key.toUpperCase();
+        return `${formattedKey}=${encodeURIComponent(value || '')}`;
+      }).join('&');
 
       // base action and values
     const path = `${action}&${values}`;

@@ -1,44 +1,57 @@
 import { useState } from 'react';
 import fetch from 'jsonp-promise';
 
-interface UseMailChimpOptionsProps {
+export interface UseMailChimpOptionsProps {
   dontUpperCaseKeys?: boolean;
 }
 
-interface UseMailChimpProps {
+export interface UseMailChimpProps {
   action: string;
-  options: UseMailChimpOptionsProps;
+  options?: UseMailChimpOptionsProps;
 }
 
-export interface MailchimpFieldProps {
+export interface UseMailchimpFieldProps {
   [x: string]: string | number;
+}
+
+export interface UseMailChimpResponse {
+  error: boolean;
+  loading: boolean;
+  status: UseMailChimpStatus;
+  message: string | undefined;
+  subscribe: (passedFields: Partial<UseMailchimpFieldProps>) => Promise<void>;
 }
 
 const regex = /^([\w_.\-+])+@([\w-]+\.)+([\w]{2,10})+$/;
 
-export const useMailChimp = ({ action, options }: UseMailChimpProps) => {
-  const [error, setError] = useState<undefined | string>(undefined);
-  const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState<string | undefined>(undefined);
+export type UseMailChimpStatus = 'sending' | 'duplicate' | 'success' | 'failed' | undefined;
 
-  const handleError = (error: string) => {
+export const useMailChimp = ({ action, options }: UseMailChimpProps): UseMailChimpResponse => {
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<UseMailChimpStatus>(undefined);
+  const [message, setMessage] = useState<string | undefined>(undefined);
+
+  const handleError = (error: boolean) => {
     setError(error);
     setStatus(undefined);
     setLoading(false);
   };
+
   const handleReset = () => {
-    setError(undefined);
-    setStatus('Sending');
+    setError(false);
+    setMessage(undefined);
+    setStatus('sending');
     setLoading(true);
   };
 
-  const handleStatus = (data: string) => {
+  const handleStatus = (data: UseMailChimpStatus) => {
     setStatus(data);
     setLoading(false);
-    setError(undefined);
+    setError(false);
   };
 
-  const subscribe = async (passedFields: Partial<MailchimpFieldProps>) => {
+  const subscribe = async (passedFields: Partial<UseMailchimpFieldProps>) => {
     const fields = { ...passedFields };
 
     // Handle if user uses lowercase email field
@@ -51,7 +64,8 @@ export const useMailChimp = ({ action, options }: UseMailChimpProps) => {
       const { EMAIL } = fields;
 
       if (!EMAIL || !regex.test(`${EMAIL}`)) {
-        handleError('Invalid email');
+        handleError(true);
+        setMessage('Invalid email');
         return;
       }
 
@@ -77,26 +91,23 @@ export const useMailChimp = ({ action, options }: UseMailChimpProps) => {
       // Reset everything for try
       handleReset();
 
-      const response: any = await fetch(url, { param: 'c' }).promise;
+      const data = await fetch(url, { param: 'c' }).promise;
 
-      if (response.status >= 400) {
-        handleError('Failed to subscribe');
-        return;
-      }
+      // Always set a the message that comes back from MC
+      setMessage(data.msg);
 
-      const data: any = response.json();
-
+      // Is the user already in the MC list
       if (data.msg.includes('already subscribed')) {
         handleStatus('duplicate');
+        // Check we are not getting any other errors back
       } else if (data.result !== 'success') {
-        handleError('Failed to subscribe');
+        handleError(true);
       } else {
         handleStatus('success');
       }
-
-      handleStatus(response.json());
     } catch (e) {
-      handleError('Failed to subscribe');
+      handleError(true);
+      setMessage(e);
     }
   };
 
@@ -104,6 +115,7 @@ export const useMailChimp = ({ action, options }: UseMailChimpProps) => {
     error,
     loading,
     status,
+    message,
     subscribe,
   };
 };

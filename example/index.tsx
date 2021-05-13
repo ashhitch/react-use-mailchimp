@@ -1,17 +1,17 @@
 import 'react-app-polyfill/ie11';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { MailchimpFieldProps, useMailChimp } from '../.';
+import { UseMailchimpFieldProps, useMailChimp } from '../.';
 
 const App = () => {
 
-  const {error, loading, status, subscribe} = useMailChimp({ action: `https://<YOUR-USER>.us18.list-manage.com/subscribe/post?u=XXXXXX&amp;id=XXXXXX`});
+  const {error, loading, status, subscribe, message} = useMailChimp({ action: `https://<YOUR-USER>.us18.list-manage.com/subscribe/post?u=XXXXXX&amp;id=XXXXXX`});
 
-const [inputs, setInputs] = React.useState<MailchimpFieldProps>();
+const [inputs, setInputs] = React.useState<UseMailchimpFieldProps>();
 
 const handleInputChange = (event) => {
     event.persist();
-    setInputs((inputs: MailchimpFieldProps) => ({...inputs, [event.target.name]: event.target.value}));
+    setInputs((inputs: UseMailchimpFieldProps) => ({...inputs, [event.target.name]: event.target.value}));
   }
 
   const handleSubmit = (event) => {
@@ -26,9 +26,10 @@ const handleInputChange = (event) => {
 
   return (
     <>
-    {error && <p>{error}</p>}
+    {error && <p>ERROR</p>}
     {loading && <p>...Loading</p>}
     {status && <p>{status}</p>}
+    {message && <p>{message}</p>}
 
     <form onSubmit={handleSubmit}>
       <label htmlFor="mchimpEmail">Email</label>

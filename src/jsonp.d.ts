@@ -1,1 +1,1 @@
-declare module 'jsonp-promise'
+declare module 'jsonp-promise';

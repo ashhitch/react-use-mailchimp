@@ -12,6 +12,11 @@ npm install react-use-mailchimp-signup --save
 yarn add react-use-mailchimp-signup
 ```
 
+## Version 2
+
+Note version 2 fixes possible CORs issues and includes a breaking change to return `error` as a Boolean.
+You can now get more information about the error (and success) from the new `message` property
+
 # Usage
 
 ```jsx
@@ -20,7 +25,7 @@ import React, { useState } from 'react';
 import { useMailChimp } from 'react-use-mailchimp-signup';
 
 export const MyComponent = () => {
-  const { error, loading, status, subscribe } = useMailChimp({
+  const { error, loading, status, subscribe, message } = useMailChimp({
     action: `https://<YOUR-USER>.us18.list-manage.com/subscribe/post?u=XXXXXX&amp;id=XXXXXX`,
   });
 
@@ -45,21 +50,27 @@ export const MyComponent = () => {
 
   return (
     <>
-      {error && <p>{error}</p>}
+      {error && <p>ERROR</p>}
       {loading && <p>...Loading</p>}
       {status && <p>{status}</p>}
+      {message && <p>{message}</p>}
 
       <form onSubmit={handleSubmit}>
         <label htmlFor="mchimpEmail">Email</label>
-        <input
-          type="email"
-          name="email"
-          id="mchimpEmail"
-          onChange={handleInputChange}
-        />
+        <input type="email" name="email" id="mchimpEmail" onChange={handleInputChange} />
         <button type="submit">Sign me up!</button>
       </form>
     </>
   );
 };
+```
+
+## Response from `subscribe` method
+
+```
+  error: boolean;
+  loading: boolean;
+  status: UseMailChimpStatus;
+  message: string | undefined;
+  subscribe: (passedFields: Partial<UseMailchimpFieldProps>) => Promise<void>;
 ```

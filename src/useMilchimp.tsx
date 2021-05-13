@@ -1,5 +1,5 @@
 import  { useState } from 'react';
-import fetch from 'isomorphic-fetch';
+import fetch from 'jsonp-promise';
 
 
 
@@ -64,7 +64,7 @@ export const useMailChimp = ({ action, options }: UseMailChimpProps) =>
       const { EMAIL } = fields;
   
       if(!EMAIL || !regex.test(`${EMAIL}`) ){
-        handleError('invalid email');
+        handleError('Invalid email');
         return;
       }
 
@@ -88,9 +88,7 @@ export const useMailChimp = ({ action, options }: UseMailChimpProps) =>
 // Reset everything for try 
       handleReset();
 
-      const response: any = await fetch(url, {
-        method: 'POST',
-      });
+      const response: any = await fetch(url,{ param: 'c'}).promise;
 
       if (response.status >= 400) {
         handleError('Failed to subscribe');
